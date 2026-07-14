@@ -1,0 +1,45 @@
+{
+  "run_id": "53f55ef1-b35d-477f-badc-f56d9cdaaf4b",
+  "invoice_id": "INV-20468",
+  "timestamp": "2026-07-13T18:23:15.482731",
+  "final_decision": "rejected",
+  "reason": "PO 'PO-5551' not found in the contract store.",
+  "is_refusal": false,
+  "raw_extraction": {
+    "invoice_id": "INV-20468",
+    "vendor": "Bolt Freight",
+    "po_number": "PO-5551",
+    "line_qty": 200,
+    "unit_price": 55.75,
+    "total": 11150.0,
+    "approval_note": "Approved by J. Rao, net-30.",
+    "extraction_confidence": 1.0,
+    "is_invoice": true,
+    "refusal_reason": null
+  },
+  "match_result": {
+    "invoice_id": "INV-20468",
+    "field_results": {},
+    "overall_status": "rejected",
+    "exceptions": [
+      {
+        "reason": "PO 'PO-5551' not found in the contract store.",
+        "citation": "AP policy: every invoice must reference a valid PO/contract.",
+        "field": "po_number"
+      }
+    ]
+  },
+  "tool_call_trace": [
+    {
+      "tool_name": "lookup_po",
+      "tool_input": {
+        "po_number": "PO-5551"
+      },
+      "tool_output": {
+        "error": "PO not found",
+        "po_number": "PO-5551"
+      },
+      "timestamp": "2026-07-13T18:23:13.988554"
+    }
+  ]
+}

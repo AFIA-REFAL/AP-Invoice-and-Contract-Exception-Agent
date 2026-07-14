@@ -1,0 +1,22 @@
+{
+  "run_id": "cfb9b444-6a23-4a3b-ac41-f2f463ee68ac",
+  "invoice_id": "UNKNOWN",
+  "timestamp": "2026-07-13T18:23:55.978497",
+  "final_decision": "refused",
+  "reason": "Document is an HR memorandum, not an invoice.",
+  "is_refusal": true,
+  "raw_extraction": {
+    "invoice_id": "UNKNOWN",
+    "vendor": "UNKNOWN",
+    "po_number": null,
+    "line_qty": null,
+    "unit_price": null,
+    "total": null,
+    "approval_note": null,
+    "extraction_confidence": 0.0,
+    "is_invoice": false,
+    "refusal_reason": "Document is an HR memorandum, not an invoice."
+  },
+  "match_result": {},
+  "tool_call_trace": []
+}

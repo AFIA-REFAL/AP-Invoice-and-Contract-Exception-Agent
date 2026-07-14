@@ -1,0 +1,22 @@
+{
+  "run_id": "facfa302-a09a-45e6-a04e-b6e304553519",
+  "invoice_id": "INV-20473",
+  "timestamp": "2026-07-12T14:46:46.782448",
+  "final_decision": "rejected",
+  "reason": "Missing required field(s): total",
+  "is_refusal": false,
+  "raw_extraction": {
+    "invoice_id": "INV-20473",
+    "vendor": "Bolt Freight",
+    "po_number": "PO-5551",
+    "line_qty": 200,
+    "unit_price": 55.75,
+    "total": null,
+    "approval_note": "Rush delivery requested.",
+    "extraction_confidence": 0.75,
+    "is_invoice": true,
+    "refusal_reason": null
+  },
+  "match_result": {},
+  "tool_call_trace": []
+}

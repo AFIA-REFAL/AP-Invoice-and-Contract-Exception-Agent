@@ -1,0 +1,22 @@
+{
+  "run_id": "e3060bb6-64c0-446c-916d-5b88ee858d67",
+  "invoice_id": "UNKNOWN",
+  "timestamp": "2026-07-12T14:22:26.084729",
+  "final_decision": "refused",
+  "reason": "Extraction failed: 'OPENROUTER_API_KEY'",
+  "is_refusal": true,
+  "raw_extraction": {
+    "invoice_id": "UNKNOWN",
+    "vendor": "UNKNOWN",
+    "po_number": null,
+    "line_qty": null,
+    "unit_price": null,
+    "total": null,
+    "approval_note": null,
+    "extraction_confidence": 0.0,
+    "is_invoice": false,
+    "refusal_reason": "Extraction failed: 'OPENROUTER_API_KEY'"
+  },
+  "match_result": {},
+  "tool_call_trace": []
+}

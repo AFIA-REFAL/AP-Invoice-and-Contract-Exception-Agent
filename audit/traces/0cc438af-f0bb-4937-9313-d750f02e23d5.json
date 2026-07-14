@@ -1,0 +1,22 @@
+{
+  "run_id": "0cc438af-f0bb-4937-9313-d750f02e23d5",
+  "invoice_id": "UNKNOWN",
+  "timestamp": "2026-07-12T14:42:54.732955",
+  "final_decision": "refused",
+  "reason": "Extraction failed: Invoice extraction failed after retry. First error: APIStatusError(\"Error code: 402 - {'error': {'message': 'This request requires more credits, or fewer max_tokens. You requested up to 16384 tokens, but can only afford 16308. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account', 'code': 402, 'metadata': {'provider_name': None, 'previous_errors': [{'code': 402, 'message': 'This request requires more credits, or fewer max_tokens. You requested up to 16384 tokens, but can only afford 16308. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}]}}, 'user_id': 'user_3GHFGTFLQSThKFFVHCPaNde03Cp'}\"). Second error: APIStatusError(\"Error code: 402 - {'error': {'message': 'This request requires more credits, or fewer max_tokens. You requested up to 16384 tokens, but can only afford 16308. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account', 'code': 402, 'metadata': {'provider_name': None, 'previous_errors': [{'code': 402, 'message': 'This request requires more credits, or fewer max_tokens. You requested up to 16384 tokens, but can only afford 16308. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}]}}, 'user_id': 'user_3GHFGTFLQSThKFFVHCPaNde03Cp'}\").",
+  "is_refusal": true,
+  "raw_extraction": {
+    "invoice_id": "UNKNOWN",
+    "vendor": "UNKNOWN",
+    "po_number": null,
+    "line_qty": null,
+    "unit_price": null,
+    "total": null,
+    "approval_note": null,
+    "extraction_confidence": 0.0,
+    "is_invoice": false,
+    "refusal_reason": "Extraction failed: Invoice extraction failed after retry. First error: APIStatusError(\"Error code: 402 - {'error': {'message': 'This request requires more credits, or fewer max_tokens. You requested up to 16384 tokens, but can only afford 16308. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account', 'code': 402, 'metadata': {'provider_name': None, 'previous_errors': [{'code': 402, 'message': 'This request requires more credits, or fewer max_tokens. You requested up to 16384 tokens, but can only afford 16308. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}]}}, 'user_id': 'user_3GHFGTFLQSThKFFVHCPaNde03Cp'}\"). Second error: APIStatusError(\"Error code: 402 - {'error': {'message': 'This request requires more credits, or fewer max_tokens. You requested up to 16384 tokens, but can only afford 16308. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account', 'code': 402, 'metadata': {'provider_name': None, 'previous_errors': [{'code': 402, 'message': 'This request requires more credits, or fewer max_tokens. You requested up to 16384 tokens, but can only afford 16308. To increase, visit https://openrouter.ai/settings/credits and upgrade to a paid account'}]}}, 'user_id': 'user_3GHFGTFLQSThKFFVHCPaNde03Cp'}\")."
+  },
+  "match_result": {},
+  "tool_call_trace": []
+}

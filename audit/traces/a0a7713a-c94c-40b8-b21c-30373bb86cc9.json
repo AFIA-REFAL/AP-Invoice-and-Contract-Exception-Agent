@@ -1,0 +1,137 @@
+{
+  "run_id": "a0a7713a-c94c-40b8-b21c-30373bb86cc9",
+  "invoice_id": "INV-20468",
+  "timestamp": "2026-07-12T14:46:18.597183",
+  "final_decision": "approved",
+  "reason": null,
+  "is_refusal": false,
+  "raw_extraction": {
+    "invoice_id": "INV-20468",
+    "vendor": "Bolt Freight",
+    "po_number": "PO-5551",
+    "line_qty": 200,
+    "unit_price": 55.75,
+    "total": 11150.0,
+    "approval_note": "Approved by J. Rao, net-30.",
+    "extraction_confidence": 1.0,
+    "is_invoice": true,
+    "refusal_reason": null
+  },
+  "match_result": {
+    "invoice_id": "INV-20468",
+    "field_results": {
+      "line_qty": {
+        "invoice_value": 200,
+        "po_value": 200,
+        "status": "match",
+        "delta": 0.0
+      },
+      "unit_price": {
+        "invoice_value": 55.75,
+        "po_value": 55.75,
+        "status": "match",
+        "delta": 0.0
+      },
+      "total": {
+        "invoice_value": 11150.0,
+        "po_value": 11150.0,
+        "status": "match",
+        "delta": 0.0
+      }
+    },
+    "overall_status": "straight_through",
+    "exceptions": []
+  },
+  "tool_call_trace": [
+    {
+      "tool_name": "lookup_po",
+      "tool_input": {
+        "po_number": "PO-5551"
+      },
+      "tool_output": {
+        "vendor": "Bolt Freight",
+        "contract_id": "MSA-BOLT-2023",
+        "line_qty": 200,
+        "unit_price": 55.75,
+        "expected_total": 11150.0,
+        "approval_required_over": 10000,
+        "approved_by": "J. Rao"
+      },
+      "timestamp": "2026-07-12T14:46:11.711670"
+    },
+    {
+      "tool_name": "check_vendor_match",
+      "tool_input": {
+        "invoice_vendor": "Bolt Freight",
+        "po_vendor": "Bolt Freight"
+      },
+      "tool_output": {
+        "status": "match",
+        "invoice_vendor": "Bolt Freight",
+        "po_vendor": "Bolt Freight",
+        "citation": "Per PO/contract record, expected vendor is 'Bolt Freight'"
+      },
+      "timestamp": "2026-07-12T14:46:14.792453"
+    },
+    {
+      "tool_name": "compare_field",
+      "tool_input": {
+        "field_name": "line_qty",
+        "invoice_value": 200,
+        "po_value": 200
+      },
+      "tool_output": {
+        "field": "line_qty",
+        "status": "match",
+        "delta": 0.0,
+        "citation": "Per contract, line_qty is 200.0"
+      },
+      "timestamp": "2026-07-12T14:46:14.793636"
+    },
+    {
+      "tool_name": "compare_field",
+      "tool_input": {
+        "field_name": "unit_price",
+        "invoice_value": 55.75,
+        "po_value": 55.75
+      },
+      "tool_output": {
+        "field": "unit_price",
+        "status": "match",
+        "delta": 0.0,
+        "citation": "Per contract, unit_price is 55.75"
+      },
+      "timestamp": "2026-07-12T14:46:14.794800"
+    },
+    {
+      "tool_name": "compare_field",
+      "tool_input": {
+        "field_name": "total",
+        "invoice_value": 11150.0,
+        "po_value": 11150.0
+      },
+      "tool_output": {
+        "field": "total",
+        "status": "match",
+        "delta": 0.0,
+        "citation": "Per contract, total is 11150.0"
+      },
+      "timestamp": "2026-07-12T14:46:14.795901"
+    },
+    {
+      "tool_name": "check_approval",
+      "tool_input": {
+        "total": 11150.0,
+        "approval_required_over": 10000,
+        "approved_by": "J. Rao"
+      },
+      "tool_output": {
+        "requires_approval": true,
+        "has_approval": true,
+        "approved_by": "J. Rao",
+        "citation": "Per PO/contract terms, manager approval is required for invoices exceeding $10,000.00"
+      },
+      "timestamp": "2026-07-12T14:46:14.796951"
+    }
+  ]
+}

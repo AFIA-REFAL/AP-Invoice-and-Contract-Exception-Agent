@@ -1,0 +1,148 @@
+{
+  "run_id": "2b7876ec-26df-4b47-a172-01df6caa7228",
+  "invoice_id": "INV-20472",
+  "timestamp": "2026-07-13T18:32:11.382631",
+  "final_decision": "exception",
+  "reason": "line_qty variance: invoice has 300, contract specifies 120 (delta +180.0); approval_required_over: manager approval is required for invoice total $11,400.00 because it exceeds the PO threshold, but no approval is on file in the PO record.",
+  "is_refusal": false,
+  "raw_extraction": {
+    "invoice_id": "INV-20472",
+    "vendor": "Acme Supplies",
+    "po_number": "PO-5567",
+    "line_qty": 300,
+    "unit_price": 38.0,
+    "total": 11400.0,
+    "approval_note": "Standard delivery.",
+    "extraction_confidence": 1.0,
+    "is_invoice": true,
+    "refusal_reason": null
+  },
+  "match_result": {
+    "invoice_id": "INV-20472",
+    "field_results": {
+      "line_qty": {
+        "invoice_value": 300,
+        "po_value": 120,
+        "status": "variance",
+        "delta": 180.0
+      },
+      "unit_price": {
+        "invoice_value": 38.0,
+        "po_value": 38.0,
+        "status": "match",
+        "delta": 0.0
+      },
+      "total": {
+        "invoice_value": 11400.0,
+        "po_value": 11400.0,
+        "status": "match",
+        "delta": 0.0
+      }
+    },
+    "overall_status": "exception",
+    "exceptions": [
+      {
+        "reason": "line_qty variance: invoice has 300, contract specifies 120 (delta +180.0)",
+        "citation": "Per contract, line_qty is 120.0",
+        "field": "line_qty"
+      },
+      {
+        "reason": "approval_required_over: manager approval is required for invoice total $11,400.00 because it exceeds the PO threshold, but no approval is on file in the PO record.",
+        "citation": "Per PO/contract terms, manager approval is required for invoices exceeding $10,000.00",
+        "field": "approval_required_over"
+      }
+    ]
+  },
+  "tool_call_trace": [
+    {
+      "tool_name": "lookup_po",
+      "tool_input": {
+        "po_number": "PO-5567"
+      },
+      "tool_output": {
+        "vendor": "Acme Supplies",
+        "contract_id": "MSA-ACME-2024",
+        "line_qty": 120,
+        "unit_price": 38.0,
+        "expected_total": 11400.0,
+        "approval_required_over": 10000.0,
+        "approved_by": null
+      },
+      "timestamp": "2026-07-13T18:32:00.120381"
+    },
+    {
+      "tool_name": "check_vendor_match",
+      "tool_input": {
+        "invoice_vendor": "Acme Supplies",
+        "po_vendor": "Acme Supplies"
+      },
+      "tool_output": {
+        "status": "match",
+        "invoice_vendor": "Acme Supplies",
+        "po_vendor": "Acme Supplies",
+        "citation": "Per PO/contract record, expected vendor is 'Acme Supplies'"
+      },
+      "timestamp": "2026-07-13T18:32:03.659297"
+    },
+    {
+      "tool_name": "compare_field",
+      "tool_input": {
+        "field_name": "line_qty",
+        "invoice_value": 300,
+        "po_value": 120
+      },
+      "tool_output": {
+        "field": "line_qty",
+        "status": "variance",
+        "delta": 180.0,
+        "citation": "Per contract, line_qty is 120.0"
+      },
+      "timestamp": "2026-07-13T18:32:03.660215"
+    },
+    {
+      "tool_name": "compare_field",
+      "tool_input": {
+        "field_name": "unit_price",
+        "invoice_value": 38.0,
+        "po_value": 38.0
+      },
+      "tool_output": {
+        "field": "unit_price",
+        "status": "match",
+        "delta": 0.0,
+        "citation": "Per contract, unit_price is 38.0"
+      },
+      "timestamp": "2026-07-13T18:32:03.662049"
+    },
+    {
+      "tool_name": "compare_field",
+      "tool_input": {
+        "field_name": "total",
+        "invoice_value": 11400.0,
+        "po_value": 11400.0
+      },
+      "tool_output": {
+        "field": "total",
+        "status": "match",
+        "delta": 0.0,
+        "citation": "Per contract, total is 11400.0"
+      },
+      "timestamp": "2026-07-13T18:32:03.662585"
+    },
+    {
+      "tool_name": "check_approval",
+      "tool_input": {
+        "total": 11400.0,
+        "approval_required_over": 10000.0,
+        "approved_by": null
+      },
+      "tool_output": {
+        "requires_approval": true,
+        "has_approval": false,
+        "approved_by": null,
+        "citation": "Per PO/contract terms, manager approval is required for invoices exceeding $10,000.00"
+      },
+      "timestamp": "2026-07-13T18:32:03.663217"
+    }
+  ]
+}
