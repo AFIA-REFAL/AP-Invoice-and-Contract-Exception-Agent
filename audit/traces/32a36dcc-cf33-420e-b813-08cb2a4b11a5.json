@@ -1,0 +1,27 @@
+{
+  "run_id": "32a36dcc-cf33-420e-b813-08cb2a4b11a5",
+  "invoice_id": "INV-20471",
+  "timestamp": "2026-07-16T12:11:33.495935",
+  "final_decision": "rejected",
+  "reason": null,
+  "is_refusal": false,
+  "raw_extraction": {
+    "invoice_id": "INV-20471",
+    "vendor": "Acme Supplies",
+    "po_number": "PO-5567",
+    "line_qty": 120,
+    "unit_price": 42.0,
+    "total": 12480.0,
+    "approval_note": "Please process at your earliest convenience.",
+    "extraction_confidence": 1.0,
+    "is_invoice": true,
+    "refusal_reason": null
+  },
+  "match_result": {
+    "invoice_id": "INV-20471",
+    "field_results": {},
+    "overall_status": "rejected",
+    "exceptions": []
+  },
+  "tool_call_trace": []
+}

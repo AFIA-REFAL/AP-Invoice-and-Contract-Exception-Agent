@@ -32,13 +32,13 @@ from __future__ import annotations
 
 import json
 import os
-import sys
 import textwrap
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
 from dotenv import load_dotenv
+from project_paths import find_project_root
 from langchain_core.messages import (
     AIMessage,
     BaseMessage,
@@ -49,9 +49,7 @@ from langchain_core.messages import (
 from langchain_openai import ChatOpenAI
 
 # ── path setup ────────────────────────────────────────────────────────────────
-_PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if str(_PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(_PROJECT_ROOT))
+_PROJECT_ROOT = find_project_root(__file__)
 
 load_dotenv(_PROJECT_ROOT / ".env")
 
@@ -317,17 +315,18 @@ def run_matching_agent(
       3. When the LLM returns a message with no tool_calls, treats it as the
          final verdict and parses it into a MatchResult.
 
-    Parameters
-    ----------
-    invoice : ValidatedInvoice
-        The validated invoice to match.
-
-    Returns
-    -------
-    tuple[MatchResult, list[ToolCallRecord]]
-        The match result and the ordered list of tool call records.
+    If the LLM call fails (for example due to OpenRouter quota/credit errors),
+    the function falls back to a deterministic tool-based pass that still
+    produces a useful MatchResult instead of defaulting to rejection.
     """
-    llm = _build_llm().bind_tools(MATCHING_TOOLS)
+    llm = None
+    try:
+        llm = _build_llm().bind_tools(MATCHING_TOOLS)
+    except Exception as exc:
+        llm = None
+        llm_error = str(exc)
+    else:
+        llm_error = None
 
     # Human message describes the invoice as structured data so the LLM
     # has precise values to pass to tools — avoids hallucination.
@@ -348,63 +347,109 @@ def run_matching_agent(
     tool_records: list[ToolCallRecord] = []
     llm_verdict_dict: Optional[dict] = None
 
-    for iteration in range(_MAX_ITERATIONS):
-        response: AIMessage = llm.invoke(messages)
-        messages.append(response)
+    if llm is not None:
+        try:
+            for iteration in range(_MAX_ITERATIONS):
+                response: AIMessage = llm.invoke(messages)
+                messages.append(response)
 
-        # ── No tool calls → final answer ──────────────────────────────────────
-        if not response.tool_calls:
-            # Try to parse the content as JSON verdict
-            content = (response.content or "").strip()
-            if content.startswith("```"):
-                # Strip markdown code fences
-                content = content.split("\n", 1)[1] if "\n" in content else content[3:]
-                if content.endswith("```"):
-                    content = content[:-3].strip()
-            try:
-                llm_verdict_dict = json.loads(content)
-            except (json.JSONDecodeError, ValueError):
-                llm_verdict_dict = None
-            break
+                # ── No tool calls → final answer ─────────────────────────────
+                if not response.tool_calls:
+                    content = (response.content or "").strip()
+                    if content.startswith("```"):
+                        content = content.split("\n", 1)[1] if "\n" in content else content[3:]
+                        if content.endswith("```"):
+                            content = content[:-3].strip()
+                    try:
+                        llm_verdict_dict = json.loads(content)
+                    except (json.JSONDecodeError, ValueError):
+                        llm_verdict_dict = None
+                    break
 
-        # ── Execute each tool call ─────────────────────────────────────────────
-        for tc in response.tool_calls:
-            tool_name: str = tc["name"]
-            tool_args: dict = tc["args"]
-            tool_call_id: str = tc["id"]
+                # ── Execute each tool call ─────────────────────────────────
+                for tc in response.tool_calls:
+                    tool_name: str = tc["name"]
+                    tool_args: dict = tc["args"]
+                    tool_call_id: str = tc["id"]
 
-            tool_fn = _TOOL_MAP.get(tool_name)
-            if tool_fn is None:
-                tool_output: dict = {"error": f"Unknown tool: {tool_name}"}
-            else:
-                call_ts = datetime.now()
-                try:
-                    raw_output = tool_fn.invoke(tool_args)
-                    # Normalise: tools return dicts directly
-                    if isinstance(raw_output, dict):
-                        tool_output = raw_output
+                    tool_fn = _TOOL_MAP.get(tool_name)
+                    if tool_fn is None:
+                        tool_output: dict = {"error": f"Unknown tool: {tool_name}"}
                     else:
-                        tool_output = {"result": raw_output}
-                except Exception as exc:
-                    tool_output = {"error": str(exc)}
+                        call_ts = datetime.now()
+                        try:
+                            raw_output = tool_fn.invoke(tool_args)
+                            if isinstance(raw_output, dict):
+                                tool_output = raw_output
+                            else:
+                                tool_output = {"result": raw_output}
+                        except Exception as exc:
+                            tool_output = {"error": str(exc)}
 
+                        tool_records.append(ToolCallRecord(
+                            tool_name=tool_name,
+                            tool_input=tool_args,
+                            tool_output=tool_output,
+                            timestamp=call_ts,
+                        ))
+
+                    messages.append(ToolMessage(
+                        content=json.dumps(tool_output, default=str),
+                        tool_call_id=tool_call_id,
+                    ))
+            else:
+                pass
+        except Exception as exc:
+            llm_error = str(exc)
+
+    if not tool_records and llm_error:
+        po_record = None
+        try:
+            po_record = lookup_po.invoke({"po_number": invoice.po_number or ""})
+        except Exception:
+            po_record = {"error": "PO lookup unavailable"}
+
+        if isinstance(po_record, dict) and "error" not in po_record:
+            tool_records.append(ToolCallRecord(
+                tool_name="lookup_po",
+                tool_input={"po_number": invoice.po_number or ""},
+                tool_output=po_record,
+                timestamp=datetime.now(),
+            ))
+
+            if po_record.get("vendor") and invoice.vendor:
                 tool_records.append(ToolCallRecord(
-                    tool_name=tool_name,
-                    tool_input=tool_args,
-                    tool_output=tool_output,
-                    timestamp=call_ts,
+                    tool_name="check_vendor_match",
+                    tool_input={"invoice_vendor": invoice.vendor, "po_vendor": po_record.get("vendor")},
+                    tool_output=check_vendor_match.invoke({
+                        "invoice_vendor": invoice.vendor,
+                        "po_vendor": po_record.get("vendor"),
+                    }),
+                    timestamp=datetime.now(),
                 ))
 
-            # Feed tool result back to the conversation
-            messages.append(ToolMessage(
-                content=json.dumps(tool_output, default=str),
-                tool_call_id=tool_call_id,
+            tool_records.append(ToolCallRecord(
+                tool_name="compare_field",
+                tool_input={"field_name": "total", "invoice_value": invoice.total, "po_value": po_record.get("expected_total")},
+                tool_output=compare_field.invoke({
+                    "field_name": "total",
+                    "invoice_value": invoice.total,
+                    "po_value": po_record.get("expected_total"),
+                }),
+                timestamp=datetime.now(),
             ))
-    else:
-        # Exceeded max iterations — build result from whatever was collected
-        pass
 
-    # ── Build MatchResult deterministically from tool outputs ─────────────────
+            tool_records.append(ToolCallRecord(
+                tool_name="check_approval",
+                tool_input={"total": invoice.total, "approval_required_over": po_record.get("approval_required_over"), "approved_by": po_record.get("approved_by")},
+                tool_output=check_approval.invoke({
+                    "total": invoice.total,
+                    "approval_required_over": po_record.get("approval_required_over"),
+                    "approved_by": po_record.get("approved_by"),
+                }),
+                timestamp=datetime.now(),
+            ))
+
     match_result = _build_match_result(invoice, tool_records, llm_verdict_dict)
     return match_result, tool_records
 

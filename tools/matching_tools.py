@@ -28,16 +28,9 @@ approval requirement.
 
 from __future__ import annotations
 
-import sys
-from pathlib import Path
 from typing import Optional
 
 from langchain_core.tools import tool
-
-# ── path setup: allow import when running as a script or from tests ──────────
-_PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if str(_PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(_PROJECT_ROOT))
 
 from store.po_store import get_po  # noqa: E402
 

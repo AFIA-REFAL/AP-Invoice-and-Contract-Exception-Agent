@@ -24,19 +24,18 @@ from __future__ import annotations
 
 import json
 import os
-import sys
 import textwrap
 from pathlib import Path
 from typing import Optional
 
 from dotenv import load_dotenv
+from project_paths import find_project_root
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from pydantic import ValidationError
 
 # ── path setup: allow running as a script from the project root ──────────────
-_PROJECT_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(_PROJECT_ROOT))
+_PROJECT_ROOT = find_project_root(__file__)
 
 from schemas.models import InvoiceLineExtraction  # noqa: E402
 

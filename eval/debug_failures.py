@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 from typing import Any
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
+from project_paths import find_project_root
+
+PROJECT_ROOT = find_project_root(__file__)
 
 from agents.graph import run_pipeline
 

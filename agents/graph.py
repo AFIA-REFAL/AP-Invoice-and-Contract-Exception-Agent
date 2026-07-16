@@ -31,17 +31,14 @@ Public API
 from __future__ import annotations
 
 import json
-import sys
 import uuid
 from pathlib import Path
 from typing import Optional
 
-# ── path setup ────────────────────────────────────────────────────────────────
-_PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if str(_PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(_PROJECT_ROOT))
-
 from dotenv import load_dotenv
+from project_paths import find_project_root
+
+_PROJECT_ROOT = find_project_root(__file__)
 load_dotenv(_PROJECT_ROOT / ".env")
 
 from langgraph.graph import END, StateGraph

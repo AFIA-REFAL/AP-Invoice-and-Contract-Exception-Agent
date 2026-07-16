@@ -28,8 +28,10 @@ import json
 from pathlib import Path
 from typing import Optional
 
-# ── resolve data file relative to this file (works regardless of CWD) ────────
-_DATA_FILE = Path(__file__).resolve().parents[1] / "data" / "pos_contracts.json"
+from project_paths import find_project_root
+
+# ── resolve data file relative to the repository root (works regardless of CWD) ────────
+_DATA_FILE = find_project_root(__file__) / "data" / "pos_contracts.json"
 
 # Module-level cache — loaded once, never mutated at runtime
 _PO_CACHE: Optional[dict[str, dict]] = None
