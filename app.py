@@ -10,8 +10,15 @@ from typing import Any
 import pandas as pd
 import streamlit as st
 
+for _candidate in (Path(__file__).resolve().parent, *Path(__file__).resolve().parents):
+    if (_candidate / "project_paths.py").exists():
+        sys.path.insert(0, str(_candidate))
+        break
+
+from project_paths import find_project_root
+
 # Project path setup
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = find_project_root(__file__)
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
